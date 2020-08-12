@@ -13,16 +13,26 @@ class Main extends CI_Controller{
     public function login()
     {
         $data['title'] = 'login';
-        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[users.email]');
-        $this->form_validation->set_rules('password', 'Password', 'required|trim|min_length[6]');
+        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required');
 
         if(!$this->form_validation->run()){
             $this->load->view('base/header', $data);
             $this->load->view('auth/login');
             $this->load->view('base/footer');
         }else{
-            $this->session->set_userdata('user', $this->User->register());
-            redirect('/');
+            if(!$this->User->login()){
+                $this->session->set_flashdata('message', 'email tidak sesuai');
+                redirect('main/login');
+            }else{
+                if(password_verify($this->input->post('password'), $this->User->login()['password'])){
+                    $this->session->set_userdata('user', [$this->User->login()]);
+                    redirect('/');
+                }else{
+                    $this->session->set_flashdata('message', 'password tidak sesuai');
+                    redirect('main/login');
+                }
+            }
         }
     }
 
@@ -45,6 +55,7 @@ class Main extends CI_Controller{
     
     public function home()
     {
+        // $this->session->unset_userdata('user');
         if(!$this->session->has_userdata('user')){
             redirect('main/login');
         }

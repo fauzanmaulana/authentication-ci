@@ -10,12 +10,7 @@ class User extends CI_model
 
     public function login()
     {
-        $this->db->where('email', 'fauzan@mail.com');
-        $email =  $this->db->get('users')->result_array();
-        if(!$email){
-            return "email salah";
-        }
-        return "email bener";
+        return $this->db->get_where('users', ['email' => $this->input->post('email')])->row_array();
     }
 
     public function register()
@@ -23,12 +18,11 @@ class User extends CI_model
         $data = [
             "username" => $this->input->post('username'),
             "email" => $this->input->post('email'),
-            "password" => password_hash($this->input->post('password'), PASSWORD_BCRYPT)
+            "password" => password_hash($this->input->post('password'), PASSWORD_DEFAULT)
         ];
 
         $this->db->insert('users', $data);
 
-        $this->db->where('email', $data['email']);
-        return $this->db->get('users')->result_array();
+        return $this->db->get_where('users', ['email' => $data['email']])->result_array();
     }
 }

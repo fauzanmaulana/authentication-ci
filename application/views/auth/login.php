@@ -5,7 +5,14 @@
     <div class="col-lg-6 d-flex align-items-center">
         <div class="container px-5">
             <h2 class="text-center">Login</h2>
-            <form action="" method="post">
+
+            <?php if($this->session->has_userdata('message')): ?>
+                <div class="alert alert-danger" role="alert">
+                    <?= $this->session->flashdata('message'); ?>
+                </div>
+            <? endif; ?>
+
+            <form action="<?= site_url('main/login') ?>" method="post">
                 <div class="form-group">
                     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email" name="email">
                 </div>
