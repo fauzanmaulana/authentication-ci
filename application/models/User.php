@@ -25,4 +25,9 @@ class User extends CI_model
 
         return $this->db->get_where('users', ['email' => $data['email']])->result_array();
     }
+
+    public function all()
+    {
+        return $this->db->get_where('users', ['role' => 'user'])->result_array();
+    }
 }
